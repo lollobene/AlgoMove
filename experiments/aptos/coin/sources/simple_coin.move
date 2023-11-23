@@ -1,4 +1,4 @@
-module source_addr::coin {
+module source_addr::simple_coin {
     
     use std::signer;
 
@@ -13,16 +13,7 @@ module source_addr::coin {
         move_to(account, coin);
     }
 
-    public entry fun transfer<CoinType> (
-        from: &signer,
-        to: address,
-        amount: u64,
-    ) acquires Coin {
-        let coin = withdraw<CoinType>(from, amount);
-        deposit(to, coin);
-    }
-
-    public entry fun transfer2<CoinType>(
+    public entry fun transfer<CoinType>(
         from: address,
         to: address,
         amount: u64,
@@ -52,7 +43,6 @@ module source_addr::coin {
         let coin = borrow_global_mut<Coin<CoinType>>(to);
         coin.value = coin.value + value;
     }
-
 
     public fun mint<CoinType>(account: &signer, amount: u64): Coin<CoinType> {
         let sender_addr = signer::address_of(account);

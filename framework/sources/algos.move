@@ -20,8 +20,8 @@ module algomove::algos {
 	public fun transfer(
         from: address,
         to: address,
-        amount: u64
-	) {
+        amount: u64)
+	{
 		// TODO fare qualche check a runtime?
 		transaction::init_pay(from, to, amount);
 		opcode::itxn_submit();

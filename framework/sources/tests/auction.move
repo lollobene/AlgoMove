@@ -1,7 +1,7 @@
 module algomove::auction {
 
     use algomove::asset::{ Self, Asset };
-    use algomove::transaction;
+    use algomove::utils;
 
     struct Auction has key {
         auctioneer: address,
@@ -14,7 +14,7 @@ module algomove::auction {
     }
 
     public fun start_auction<AssetType>(acc: &signer, base: Asset<AssetType>) {
-        let auctioneer = transaction::address_of_signer(acc);
+        let auctioneer = utils::address_of_signer(acc);
         let auction = Auction { auctioneer, top_bidder: auctioneer, expired: false };
         move_to(acc, auction);
         move_to(acc, Bid { assets: base });
@@ -26,12 +26,12 @@ module algomove::auction {
         assert!(!auction.expired, 1);
         assert!(asset::value(&assets) > asset::value(&top_bid), 2);
         asset::deposit(auction.top_bidder, top_bid);
-        auction.top_bidder = transaction::address_of_signer(acc);
+        auction.top_bidder = utils::address_of_signer(acc);
         move_to(acc, Bid { assets });
     }
 
     public fun finalize_auction<AssetType>(acc: &signer) acquires Auction, Bid {
-        let auctioneer = transaction::address_of_signer(acc);
+        let auctioneer = utils::address_of_signer(acc);
         let auction = borrow_global_mut<Auction>(auctioneer);
         assert!(auctioneer == auction.auctioneer, 3);
         auction.expired = true;

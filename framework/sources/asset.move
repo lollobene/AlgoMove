@@ -29,7 +29,7 @@ module algomove::asset {
 		let sender = utils::address_of_signer(acc);
 		assert!(amount <= op::asset_holding_get_AssetBalance(sender, id), 1);
 		let escrow = op::global_CurrentApplicationAddress();
-		txn::asset_transfer(op::txn_Sender(), id, amount, escrow);
+		txn::asset_transfer(sender, id, amount, escrow);
 		Asset<AssetType> { id, amount, owner: escrow }
 	}
 

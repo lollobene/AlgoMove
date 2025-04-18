@@ -1,0 +1,171 @@
+#pragma version 10
+// TODO0: come gestire la borrow
+// questo preambolo è a livello di modulo e contiene tutte le costanti intere e tutti i nomi delle struct
+preamble:
+	intcblock 0 1 39 5 78
+	bytecblock "Nested1" "Nested2" "Nested3" "Simple"
+
+	// TODO1: il preambolo deve chiamare una entry con callsub prima o poi
+	// TODO2: emettere la txna Sender per avere il signer e passarlo come arg normale alle funzioni sia entry che non
+
+//entry public main(Arg0: &signer)
+main:
+	// #args = 1
+	proto 1 0
+	frame_dig -1
+	callsub moveto2
+	frame_dig -1
+	callsub moveto2
+	retsub
+
+
+//public moveto1(Arg0: &signer, Arg1: u64) 
+moveto1:
+    proto 2 0
+	// tutti gli args nel call stack frame preparati dalla proto e ci accediamo direttamente con la frame_dig alla bisogna
+	// se N = #args e I = #arg con 0 <= I < N, allora EMIT 'frame_dig -(N - I)'
+	frame_dig -2   // arg0: &signer
+	frame_dig -1   // arg1: u64
+	intc_2	// 39
+	+
+	intc_1   // true
+
+	// per tradurre la Pack dobbiamo convertire in byte[] tutti i campi che sono ora nello stack
+	// per farlo, dobbiamo fare un gioco di spostamenti sullo stack che alla fine ripristinerà l'ordine originale
+	// sia N = #campi, EMIT 'unconver (N-1)' per N volte ciascuna seguita dalla conversione del datatype (itob in questo caso)   
+	uncover 1	// #campi = 2, quindi offset = 1
+	itob			// convertiamo un int in un byte[]
+	uncover 1	// offset = 1, sempre uguale
+	itob 
+	// alla fine ci ritroviamo con tutti i campi convertiti e nell'ordine giusto
+	// ora dobbiamo concatenare tutti i byte[]: bisogna emettere concat per N-1 volte
+	concat 		// 1 concat perché abbiamo 2 campi
+	// ora abbiamo un unico byte[] lungo che rappresenta l'intera struct
+ 
+	// per tradurre la MoveTo dobbiamo seppellire nello stack gli arg additionali della app_local_put
+	// il signer di Move è già sullo stack di algorand per la load di arg0 alla label 0:
+	// stack: signer, packed_struct
+	// dobbiamo seppellire solo la key
+	bytec_3		// questo 3 viene dalla MoveTo[3] ed è la costante 3 del bytecblock
+	// stack: signer, packed_struct, key
+	cover 1
+	// stack: signer, key, packed_struct
+	app_local_put
+	retsub
+
+// quando una funzione move prende un argomento di tipo &signer, in algorand diventa un argoento di tipo address (che è un byte[])
+//public moveto2(Arg0: &signer = address) {
+moveto2:
+	proto 1 0
+	frame_dig -1	// arg0: &signer = address
+	intc_3	// 5
+	intc_0	// false
+	uncover 1
+	itob
+	uncover 1
+	itob
+	concat
+	intc_4	// 78
+	uncover 1  	// nessuna conversione: basta emettere la uncover 1 e nessuna itob
+	uncover 1
+	itob     	// converte 78 in byte[]
+	concat
+
+	// stack: address, packed_struct
+	bytec_0		// 0 = Nested1
+	cover 1
+	// stack: address, key, packed_struct
+	app_local_put
+	retsub
+
+
+//public borrow1(Arg0: address): u64 {
+borrow1:
+	proto 1 1
+	load 0
+
+	// l'account algorand è un address; ed in move convertiamo &signer in address
+	// trattiamo tutto come address, cioè come byte[] di lunghezza fissa 32 byte
+	frame_dig -1	// Arg0: address = byte[] di lunghezza fissa 32 byte
+ 
+	pushbytes 0x00 0x03
+	swap
+	concat	// 0x00 0x03 Arg0 (34 byte totali)
+	store 0
+	load 0
+
+	pushbytes 0x01
+	replace2 0 // 0x01 0x03 Arg0 (34 byte totali)
+	pushbytes 0x0000 0x0008
+	concat // 0x01 0x03 Arg0 0x0000 0x0008 (38 byte totali)
+
+	// i pointer sono di 3 tipologie ed hanno sempre informazioni fixed-size
+	// il formato dei pointer è il seguente, con esempi:
+	//
+	//	pointer type 0: pointer to a struct (BorrowGlobal)
+	//	type(1B)  key(1B)  addr(32B)  (34 Byte totali)
+	//	0x00     0x03    Arg0
+	//
+	//	pointer type 1: pointer to a field (BorrowField)
+	//	type(1B)  key(1B)  addr(32B)  offset(2)  len(2) (38 Byte totali)
+	//	0x01     0x03    Arg0      0x0014     0x1234
+	//
+	//	pointer type 2: pointer to a local (BorrowLoc)
+	//	type(1B)  index(1B) (2 Byte totali)
+	//	0x02     0x14
+ 
+	// ReadRef starts
+	dup
+	extract 0 1   // pointer type (1 byte)
+	btoi	// fa il padding quando non è 64 bit
+	switch 5_pt0 5_pt1 5_pt2
+	5_pt0:  // pointer type 0x00 = pointer to struct
+	   dup
+	   extract 2 32  // address (32 byte)
+	   swap
+	   extract 1 1   // key = struct number (1 byte)
+	   app_local_get 
+	   b 5_exit
+	5_pt1:	// pointer type 0x01 = pointer to struct field
+	   dupn 3
+	   extract 2 32  // address (32 byte)
+	   swap
+	   extract 1 1   // key = struct number (1 byte)
+	   app_local_get 
+	   swap
+	   extract 33 2  // field offset (2 byte)
+	   btoi			 // converte in uint64 facendo padding da 2 a 8 byte
+	   uncover 2
+	   extract 35 2  // field len (2 byte)
+	   btoi			 // converte in uint64 facendo padding da 2 a 8 byte
+	   extract3
+	   b 5_exit
+	5_pt2:    // pointer type 0x02 = pointer to local variable
+	   extract 1 1
+	   btoi  // converte in uint64 facendo padding da 1 a 8 byte
+	   loads
+	   b 5_exit
+	5_exit: // ReadRef ends
+	   // TODO: rendere il codice della ReadRef una subroutine
+	   // TODO: capire se la ReadRef tradotta così funziona con nested struct
+
+	pushint 2
+	+
+	load 0
+	 
+	pushbytes 0x01
+	replace2 0 // 0x01 0x03 Arg0 (34 byte totali)
+	pushbytes 0x0000 0x0008
+	concat // 0x01 0x03 Arg0 0x0000 0x0008 (38 byte totali)
+	
+	// TODO: in base al pointer type, circa stesso pattern della ReadRef
+	// se 0x00: fa una app_local_put
+	// se 0x01: fa una app_local_get, modifica il campo e fa una app_local_put
+	// se 0x02: fa una store
+
+	MoveLoc[1](loc0: &mut Simple)
+	ImmBorrowField[0](Simple.f: u64)
+	ReadRef
+	Ret
+}
+

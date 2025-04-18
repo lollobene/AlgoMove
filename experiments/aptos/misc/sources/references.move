@@ -22,10 +22,21 @@ module deploy_address::references {
 		g(&mut x);
 	}
 
-	public entry fun global_mut_call(addr :address) acquires Resource {
+	public entry fun global_mut_call(addr: address) acquires Resource {
 		let res = borrow_global<Resource>(addr);
 		let _foo = res.foo;
 	}
+
+	// NOT DOABLE: compiler error: Invalid return. Resource variable 'Resource' is still being borrowed.
+	// public fun return_ref(addr: address): &mut Resource acquires Resource {
+	// 	let res = borrow_global_mut<Resource>(addr);
+	// 	res
+	// }
+
+	// public fun return_ref(res: Resource): &mut Resource {
+	// 	let mut_ref = &mut res;
+		 
+	// }
 
 
 }

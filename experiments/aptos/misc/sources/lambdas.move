@@ -3,6 +3,7 @@ module deploy_address::lambdas {
 	use std::vector;
 	use std::debug;
 
+	/*
 	public inline fun apply(f: |u64|u64, x: u64): u64 {
 		f(x)
 	}
@@ -28,6 +29,6 @@ module deploy_address::lambdas {
 		let v1 = vector::empty<u64>();
 		foreach(v1, |x| print(&x));
 	}
-	
+	*/
 
 }

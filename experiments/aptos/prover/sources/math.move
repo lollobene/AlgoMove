@@ -16,7 +16,16 @@ module prover::math {
         }
     }
 	spec average(a: u64, b: u64): u64 {
-		ensures a < b ==> result 
+        ensures a > b ==> result < a && result >= b;
+		ensures b > a ==> result < b && result >= a;
+        ensures a == b ==> result == a;
 	}
+
+    public fun aborts_if_zero(x: u64) {
+        if (x == 0) abort 0x1;
+    }
+    spec aborts_if_zero(x: u64) {
+        aborts_if x == 0;
+    }
 
 }

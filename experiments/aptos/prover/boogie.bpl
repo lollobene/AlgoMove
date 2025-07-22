@@ -239,162 +239,6 @@ axiom {:ctor "Table"} (forall<K,V> t: Table K V :: {LenTable(t)}
 // ==================================================================================
 // Native object::exists_at
 
-
-datatype $1_cmp_Ordering {
-    $1_cmp_Ordering_Less(),
-    $1_cmp_Ordering_Equal(),
-    $1_cmp_Ordering_Greater()
-}
-function $IsValid'$1_cmp_Ordering_Less'(s: $1_cmp_Ordering): bool {
-    true
-}
-function $IsValid'$1_cmp_Ordering_Equal'(s: $1_cmp_Ordering): bool {
-    true
-}
-function $IsValid'$1_cmp_Ordering_Greater'(s: $1_cmp_Ordering): bool {
-    true
-}
-function $IsValid'$1_cmp_Ordering'(s: $1_cmp_Ordering): bool {
-    true
-}
-function {:inline} $IsEqual'$1_cmp_Ordering'(s1: $1_cmp_Ordering, s2: $1_cmp_Ordering): bool {
-    s1 == s2
-}
-
-function $Arbitrary_value_of'$1_cmp_Ordering'(): $1_cmp_Ordering;
-
-function {:inline} $1_cmp_$compare'bool'(s1: bool, s2: bool): $1_cmp_Ordering {
-    if s1 == s2 then $1_cmp_Ordering_Equal()
-    else if s1 == true then $1_cmp_Ordering_Greater()
-    else
-        $1_cmp_Ordering_Less()
-}
-
-procedure {:inline 1} $1_cmp_compare'bool'(s1: bool, s2: bool) returns ($ret0: $1_cmp_Ordering)  {
-    $ret0 := $1_cmp_$compare'bool'(s1, s2);
-    return;
-}
-
-function {:inline} $1_cmp_$compare'signer'(s1: $signer, s2: $signer): $1_cmp_Ordering {
-    if s1 == s2 then $1_cmp_Ordering_Equal()
-    else if s1 is $signer && s2 is $permissioned_signer then $1_cmp_Ordering_Less()
-    else if s1 is $permissioned_signer && s2 is $signer then $1_cmp_Ordering_Greater()
-    else if s1 is $signer then
-        $compare_int(s1 -> $addr, s2 -> $addr)
-    else if s1 -> $addr == s2 -> $addr then
-        $compare_int(s1 -> $permission_addr, s2 -> $permission_addr)
-    else
-        $compare_int(s1 -> $addr, s2 -> $addr)
-}
-
-procedure {:inline 1} $1_cmp_compare'signer'(s1: $signer, s2: $signer) returns ($ret0: $1_cmp_Ordering)  {
-    $ret0 := $1_cmp_$compare'signer'(s1, s2);
-    return;
-}
-
-function $compare_int(s1: int, s2: int): $1_cmp_Ordering {
-    if s1 == s2 then $1_cmp_Ordering_Equal()
-    else if s1 > s2 then $1_cmp_Ordering_Greater()
-    else $1_cmp_Ordering_Less()
-}
-
-function {:inline} $1_cmp_$compare'num'(s1: int, s2: int): $1_cmp_Ordering {
-    $compare_int(s1, s2)
-}
-
-procedure {:inline 1} $1_cmp_compare'num'(s1: int, s2: int) returns ($ret0: $1_cmp_Ordering)  {
-    $ret0 := $compare_int(s1, s2);
-    return;
-}
-
-function {:inline} $1_cmp_$compare'int'(s1: int, s2: int): $1_cmp_Ordering {
-    $compare_int(s1, s2)
-}
-
-procedure {:inline 1} $1_cmp_compare'int'(s1: int, s2: int) returns ($ret0: $1_cmp_Ordering)  {
-    $ret0 := $compare_int(s1, s2);
-    return;
-}
-
-function {:inline} $1_cmp_$compare'bv8'(s1: bv8, s2: bv8): $1_cmp_Ordering {
-    if s1 == s2 then $1_cmp_Ordering_Equal()
-    else if $Gt'Bv8'(s1,s2) then $1_cmp_Ordering_Greater()
-    else $1_cmp_Ordering_Less()
-}
-
-procedure {:inline 1} $1_cmp_compare'bv8'(s1: bv8, s2: bv8) returns ($ret0: $1_cmp_Ordering)  {
-    $ret0 := $1_cmp_$compare'bv8'(s1, s2);
-    return;
-}
-
-function {:inline} $1_cmp_$compare'bv16'(s1: bv16, s2: bv16): $1_cmp_Ordering {
-    if s1 == s2 then $1_cmp_Ordering_Equal()
-    else if $Gt'Bv16'(s1,s2) then $1_cmp_Ordering_Greater()
-    else $1_cmp_Ordering_Less()
-}
-
-procedure {:inline 1} $1_cmp_compare'bv16'(s1: bv16, s2: bv16) returns ($ret0: $1_cmp_Ordering)  {
-    $ret0 := $1_cmp_$compare'bv16'(s1, s2);
-    return;
-}
-
-function {:inline} $1_cmp_$compare'bv32'(s1: bv32, s2: bv32): $1_cmp_Ordering {
-    if s1 == s2 then $1_cmp_Ordering_Equal()
-    else if $Gt'Bv32'(s1,s2) then $1_cmp_Ordering_Greater()
-    else $1_cmp_Ordering_Less()
-}
-
-procedure {:inline 1} $1_cmp_compare'bv32'(s1: bv32, s2: bv32) returns ($ret0: $1_cmp_Ordering)  {
-    $ret0 := $1_cmp_$compare'bv32'(s1, s2);
-    return;
-}
-
-function {:inline} $1_cmp_$compare'bv64'(s1: bv64, s2: bv64): $1_cmp_Ordering {
-    if s1 == s2 then $1_cmp_Ordering_Equal()
-    else if $Gt'Bv64'(s1,s2) then $1_cmp_Ordering_Greater()
-    else $1_cmp_Ordering_Less()
-}
-
-procedure {:inline 1} $1_cmp_compare'bv64'(s1: bv64, s2: bv64) returns ($ret0: $1_cmp_Ordering)  {
-    $ret0 := $1_cmp_$compare'bv64'(s1, s2);
-    return;
-}
-
-function {:inline} $1_cmp_$compare'bv128'(s1: bv128, s2: bv128): $1_cmp_Ordering {
-    if s1 == s2 then $1_cmp_Ordering_Equal()
-    else if $Gt'Bv128'(s1,s2) then $1_cmp_Ordering_Greater()
-    else $1_cmp_Ordering_Less()
-}
-
-procedure {:inline 1} $1_cmp_compare'bv128'(s1: bv128, s2: bv128) returns ($ret0: $1_cmp_Ordering)  {
-    $ret0 := $1_cmp_$compare'bv128'(s1, s2);
-    return;
-}
-
-function {:inline} $1_cmp_$compare'bv256'(s1: bv256, s2: bv256): $1_cmp_Ordering {
-    if s1 == s2 then $1_cmp_Ordering_Equal()
-    else if $Gt'Bv256'(s1,s2) then $1_cmp_Ordering_Greater()
-    else $1_cmp_Ordering_Less()
-}
-
-procedure {:inline 1} $1_cmp_compare'bv256'(s1: bv256, s2: bv256) returns ($ret0: $1_cmp_Ordering)  {
-    $ret0 := $1_cmp_$compare'bv256'(s1, s2);
-    return;
-}function {:inline} $1_cmp_$compare'u64'(s1: int, s2: int): $1_cmp_Ordering {
-    $compare_int(s1, s2)
-}
-
-
-procedure {:inline 1} $1_cmp_compare'u64'(s1: int, s2: int) returns ($ret0: $1_cmp_Ordering)  {
-    $ret0 := $compare_int(s1, s2);
-    return;
-}
-
-
-
-
-
-
 // ==================================================================================
 // Intrinsic implementation of aggregator and aggregator factory
 
@@ -464,17 +308,6 @@ axiom (forall limit: int :: {$1_aggregator_factory_spec_new_aggregator(limit)}
      (var agg := $1_aggregator_factory_spec_new_aggregator(limit);
      $1_aggregator_spec_aggregator_get_val(agg) == 0));
 
-
-function {:inline} $1_cmp_$compare'$1_aggregator_Aggregator'(s1: $1_aggregator_Aggregator, s2: $1_aggregator_Aggregator): $1_cmp_Ordering {
-    $Arbitrary_value_of'$1_cmp_Ordering'()
-}
-
-procedure {:inline 1} $1_cmp_compare'$1_aggregator_Aggregator'(s1: $1_aggregator_Aggregator, s2: $1_aggregator_Aggregator) returns ($ret0: $1_cmp_Ordering)  {
-    $ret0 := $1_cmp_$compare'$1_aggregator_Aggregator'(s1, s2);
-    return;
-}
-
-
 // ==================================================================================
 // Native for function_info
 
@@ -484,17 +317,23 @@ procedure $1_function_info_is_identifier(s: Vec int) returns (res: bool);
 
 // Uninterpreted function for all types
 
+function $Arbitrary_value_of'$123_counter_Counter'(): $123_counter_Counter;
 
 function $Arbitrary_value_of'bool'(): bool;
 
+function $Arbitrary_value_of'address'(): int;
 
+function $Arbitrary_value_of'u256'(): int;
 
 function $Arbitrary_value_of'u64'(): int;
 
+function $Arbitrary_value_of'u8'(): int;
 
+function $Arbitrary_value_of'bv256'(): bv256;
 
 function $Arbitrary_value_of'bv64'(): bv64;
 
+function $Arbitrary_value_of'bv8'(): bv8;
 
 
 
@@ -1738,6 +1577,11 @@ procedure {:inline 1} $CastBv8to8(src: bv8) returns (dst: bv8)
 }
 
 
+function $castBv8to8(src: bv8) returns (bv8)
+{
+    src
+}
+
 
 function $shlBv8From8(src1: bv8, src2: bv8) returns (bv8)
 {
@@ -1861,6 +1705,14 @@ procedure {:inline 1} $CastBv64to8(src: bv64) returns (dst: bv8)
 }
 
 
+function $castBv64to8(src: bv64) returns (bv8)
+{
+    if ($Gt'Bv64'(src, 255bv64)) then
+        $Arbitrary_value_of'bv8'()
+    else
+    src[8:0]
+}
+
 
 function $shlBv8From64(src1: bv8, src2: bv64) returns (bv8)
 {
@@ -1942,6 +1794,14 @@ procedure {:inline 1} $CastBv256to8(src: bv256) returns (dst: bv8)
     dst := src[8:0];
 }
 
+
+function $castBv256to8(src: bv256) returns (bv8)
+{
+    if ($Gt'Bv256'(src, 255bv256)) then
+        $Arbitrary_value_of'bv8'()
+    else
+    src[8:0]
+}
 
 
 function $shlBv8From256(src1: bv8, src2: bv256) returns (bv8)
@@ -2452,6 +2312,11 @@ procedure {:inline 1} $CastBv8to64(src: bv8) returns (dst: bv64)
 }
 
 
+function $castBv8to64(src: bv8) returns (bv64)
+{
+    0bv56 ++ src
+}
+
 
 function $shlBv64From8(src1: bv64, src2: bv8) returns (bv64)
 {
@@ -2649,6 +2514,14 @@ procedure {:inline 1} $CastBv256to64(src: bv256) returns (dst: bv64)
     dst := src[64:0];
 }
 
+
+function $castBv256to64(src: bv256) returns (bv64)
+{
+    if ($Gt'Bv256'(src, 18446744073709551615bv256)) then
+        $Arbitrary_value_of'bv64'()
+    else
+    src[64:0]
+}
 
 
 function $shlBv64From256(src1: bv64, src2: bv256) returns (bv64)
@@ -2913,6 +2786,11 @@ procedure {:inline 1} $CastBv8to256(src: bv8) returns (dst: bv256)
 }
 
 
+function $castBv8to256(src: bv8) returns (bv256)
+{
+    0bv248 ++ src
+}
+
 
 function $shlBv256From8(src1: bv256, src2: bv8) returns (bv256)
 {
@@ -3016,6 +2894,11 @@ procedure {:inline 1} $CastBv64to256(src: bv64) returns (dst: bv256)
 }
 
 
+function $castBv64to256(src: bv64) returns (bv256)
+{
+    0bv192 ++ src
+}
+
 
 function $shlBv256From64(src1: bv256, src2: bv64) returns (bv256)
 {
@@ -3089,6 +2972,11 @@ procedure {:inline 1} $CastBv256to256(src: bv256) returns (dst: bv256)
     dst := src;
 }
 
+
+function $castBv256to256(src: bv256) returns (bv256)
+{
+    src
+}
 
 
 function $shlBv256From256(src1: bv256, src2: bv256) returns (bv256)
@@ -3879,117 +3767,270 @@ datatype $TypeParamInfo {
 // Given Types for Type Parameters
 
 
-// spec fun at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:4:5+74
-function {:inline} $123_math_$max(a: int, b: int): int {
-    (if ((a >= b)) then (a) else (b))
+// struct counter::Counter at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/counter.move:3:5+49
+datatype $123_counter_Counter {
+    $123_counter_Counter($value: int)
 }
+function {:inline} $Update'$123_counter_Counter'_value(s: $123_counter_Counter, x: int): $123_counter_Counter {
+    $123_counter_Counter(x)
+}
+function $IsValid'$123_counter_Counter'(s: $123_counter_Counter): bool {
+    $IsValid'u8'(s->$value)
+}
+function {:inline} $IsEqual'$123_counter_Counter'(s1: $123_counter_Counter, s2: $123_counter_Counter): bool {
+    s1 == s2
+}
+var $123_counter_Counter_$memory: $Memory $123_counter_Counter;
 
-// fun math::f [verification] at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:15:2+73
-procedure {:timeLimit 40} $123_math_f$verify(_$t0: int, _$t1: int) returns ($ret0: int)
+// fun counter::increment [verification] at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/counter.move:7:5+174
+procedure {:timeLimit 40} $123_counter_increment$verify(_$t0: int) returns ()
 {
     // declare local variables
-    var $t2: int;
-    var $t3: bool;
+    var $t1: $Mutation ($123_counter_Counter);
+    var $t2: $Mutation ($123_counter_Counter);
+    var $t3: int;
     var $t4: int;
     var $t5: int;
+    var $t6: bool;
+    var $t7: int;
+    var $t8: int;
+    var $t9: int;
+    var $t10: int;
+    var $t11: $Mutation (int);
     var $t0: int;
-    var $t1: int;
-    var $temp_0'u64': int;
+    var $temp_0'$123_counter_Counter': $123_counter_Counter;
+    var $temp_0'address': int;
+    var $123_counter_Counter_$memory#0: $Memory $123_counter_Counter;
     $t0 := _$t0;
-    $t1 := _$t1;
 
     // verification entrypoint assumptions
     call $InitVerification();
 
     // bytecode translation starts here
-    // assume WellFormed($t0) at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:15:2+1
-    assume {:print "$at(2,364,365)"} true;
-    assume $IsValid'u64'($t0);
+    // assume WellFormed($t0) at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/counter.move:7:5+1
+    assume {:print "$at(2,93,94)"} true;
+    assume $IsValid'address'($t0);
 
-    // assume WellFormed($t1) at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:15:2+1
-    assume $IsValid'u64'($t1);
+    // assume forall $rsc: 0x123::counter::Counter: ResourceDomain<0x123::counter::Counter>(): WellFormed($rsc) at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/counter.move:7:5+1
+    assume (forall $a_0: int :: {$ResourceValue($123_counter_Counter_$memory, $a_0)}(var $rsc := $ResourceValue($123_counter_Counter_$memory, $a_0);
+    ($IsValid'$123_counter_Counter'($rsc))));
 
-    // trace_local[a]($t0) at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:15:2+1
-    assume {:print "$track_local(3,0,0):", $t0} $t0 == $t0;
+    // @0 := save_mem(counter::Counter) at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/counter.move:7:5+1
+    $123_counter_Counter_$memory#0 := $123_counter_Counter_$memory;
 
-    // trace_local[b]($t1) at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:15:2+1
-    assume {:print "$track_local(3,0,1):", $t1} $t1 == $t1;
+    // trace_local[a]($t0) at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/counter.move:7:5+1
+    assume {:print "$track_local(2,0,0):", $t0} $t0 == $t0;
 
-    // $t3 := <($t1, $t0) at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:16:7+5
-    assume {:print "$at(2,407,412)"} true;
-    call $t3 := $Lt($t1, $t0);
-
-    // if ($t3) goto L1 else goto L0 at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:16:3+27
-    if ($t3) { goto L1; } else { goto L0; }
-
-    // label L1 at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:16:18+1
-L1:
-
-    // $t4 := math::max($t1, $t0) on_abort goto L4 with $t5 at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:16:14+9
-    assume {:print "$at(2,414,423)"} true;
-    call $t4 := $123_math_max($t1, $t0);
+    // $t2 := borrow_global<0x123::counter::Counter>($t0) on_abort goto L3 with $t3 at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/counter.move:8:17+29
+    assume {:print "$at(2,161,190)"} true;
+    if (!$ResourceExists($123_counter_Counter_$memory, $t0)) {
+        call $ExecFailureAbort();
+    } else {
+        $t2 := $Mutation($Global($t0), EmptyVec(), $ResourceValue($123_counter_Counter_$memory, $t0));
+    }
     if ($abort_flag) {
-        assume {:print "$at(2,414,423)"} true;
-        $t5 := $abort_code;
-        assume {:print "$track_abort(3,0):", $t5} $t5 == $t5;
-        goto L4;
+        assume {:print "$at(2,161,190)"} true;
+        $t3 := $abort_code;
+        assume {:print "$track_abort(2,0):", $t3} $t3 == $t3;
+        goto L3;
     }
 
-    // $t2 := $t4 at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:16:14+9
-    $t2 := $t4;
+    // trace_local[r]($t2) at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/counter.move:8:17+29
+    $temp_0'$123_counter_Counter' := $Dereference($t2);
+    assume {:print "$track_local(2,0,1):", $temp_0'$123_counter_Counter'} $temp_0'$123_counter_Counter' == $temp_0'$123_counter_Counter';
 
-    // trace_local[$t4]($t4) at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:16:14+9
-    assume {:print "$track_local(3,0,2):", $t4} $t4 == $t4;
+    // $t4 := get_field<0x123::counter::Counter>.value($t2) at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/counter.move:9:13+7
+    assume {:print "$at(2,204,211)"} true;
+    $t4 := $Dereference($t2)->$value;
 
-    // label L2 at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:16:3+27
-L2:
+    // $t5 := 255 at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/counter.move:9:24+3
+    $t5 := 255;
+    assume $IsValid'u8'($t5);
 
-    // trace_return[0]($t2) at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:16:3+27
-    assume {:print "$at(2,403,430)"} true;
-    assume {:print "$track_return(3,0,0):", $t2} $t2 == $t2;
+    // $t6 := <=($t4, $t5) at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/counter.move:9:13+14
+    call $t6 := $Le($t4, $t5);
 
-    // goto L3 at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:16:3+27
+    // if ($t6) goto L1 else goto L0 at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/counter.move:9:9+29
+    if ($t6) { goto L1; } else { goto L0; }
+
+    // label L1 at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/counter.move:9:29+9
+L1:
+
+    // drop($t2) at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/counter.move:9:29+9
+    assume {:print "$at(2,220,229)"} true;
+
+    // $t7 := 1 at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/counter.move:9:35+3
+    $t7 := 1;
+    assume $IsValid'u64'($t7);
+
+    // trace_abort($t7) at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/counter.move:9:29+9
+    assume {:print "$at(2,220,229)"} true;
+    assume {:print "$track_abort(2,0):", $t7} $t7 == $t7;
+
+    // $t3 := move($t7) at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/counter.move:9:29+9
+    $t3 := $t7;
+
+    // goto L3 at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/counter.move:9:29+9
     goto L3;
 
-    // label L0 at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:16:29+1
+    // label L0 at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/counter.move:10:19+7
+    assume {:print "$at(2,249,256)"} true;
 L0:
 
-    // $t2 := $t0 at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:16:29+1
-    assume {:print "$at(2,429,430)"} true;
-    $t2 := $t0;
+    // $t8 := get_field<0x123::counter::Counter>.value($t2) at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/counter.move:10:19+7
+    assume {:print "$at(2,249,256)"} true;
+    $t8 := $Dereference($t2)->$value;
 
-    // trace_local[$t4]($t0) at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:16:29+1
-    assume {:print "$track_local(3,0,2):", $t0} $t0 == $t0;
+    // $t9 := 1 at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/counter.move:10:29+1
+    $t9 := 1;
+    assume $IsValid'u8'($t9);
 
-    // goto L2 at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:16:29+1
-    goto L2;
+    // $t10 := +($t8, $t9) on_abort goto L3 with $t3 at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/counter.move:10:19+11
+    call $t10 := $AddU8($t8, $t9);
+    if ($abort_flag) {
+        assume {:print "$at(2,249,260)"} true;
+        $t3 := $abort_code;
+        assume {:print "$track_abort(2,0):", $t3} $t3 == $t3;
+        goto L3;
+    }
 
-    // label L3 at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:17:5+1
-    assume {:print "$at(2,436,437)"} true;
-L3:
+    // $t11 := borrow_field<0x123::counter::Counter>.value($t2) at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/counter.move:10:9+7
+    $t11 := $ChildMutation($t2, 0, $Dereference($t2)->$value);
 
-    // assert Eq<u64>(math::$max($t1, $t0), $t0) at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:19:3+23
-    assume {:print "$at(2,473,496)"} true;
-    assert {:msg "assert_failed(2,473,496): post-condition does not hold"}
-      $IsEqual'u64'($123_math_$max($t1, $t0), $t0);
+    // write_ref($t11, $t10) at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/counter.move:10:9+21
+    $t11 := $UpdateMutation($t11, $t10);
 
-    // return $t2 at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:19:3+23
-    $ret0 := $t2;
+    // write_back[Reference($t2).value (u8)]($t11) at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/counter.move:10:9+21
+    $t2 := $UpdateMutation($t2, $Update'$123_counter_Counter'_value($Dereference($t2), $Dereference($t11)));
+
+    // write_back[0x123::counter::Counter@]($t2) at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/counter.move:10:9+21
+    $123_counter_Counter_$memory := $ResourceUpdate($123_counter_Counter_$memory, $GlobalLocationAddress($t2),
+        $Dereference($t2));
+
+    // label L2 at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/counter.move:11:5+1
+    assume {:print "$at(2,266,267)"} true;
+L2:
+
+    // assert Not(Not(exists[@0]<0x123::counter::Counter>($t0))) at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/counter.move:13:9+30
+    assume {:print "$at(2,297,327)"} true;
+    assert {:msg "assert_failed(2,297,327): function does not abort under this condition"}
+      !!$ResourceExists($123_counter_Counter_$memory#0, $t0);
+
+    // assert Not(Le(select counter::Counter.value<0x123::counter::Counter>(global[@0]<0x123::counter::Counter>($t0)), 255)) at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/counter.move:14:9+42
+    assume {:print "$at(2,336,378)"} true;
+    assert {:msg "assert_failed(2,336,378): function does not abort under this condition"}
+      !($ResourceValue($123_counter_Counter_$memory#0, $t0)->$value <= 255);
+
+    // assert Gt(select counter::Counter.value<0x123::counter::Counter>(global<0x123::counter::Counter>($t0)), 7) at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/counter.move:16:9+37
+    assume {:print "$at(2,441,478)"} true;
+    assert {:msg "assert_failed(2,441,478): post-condition does not hold"}
+      ($ResourceValue($123_counter_Counter_$memory, $t0)->$value > 7);
+
+    // assert Eq<u8>(select counter::Counter.value<0x123::counter::Counter>(global<0x123::counter::Counter>($t0)), Add(select counter::Counter.value<0x123::counter::Counter>(global[@0]<0x123::counter::Counter>($t0)), 1)) at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/counter.move:17:9+70
+    assume {:print "$at(2,487,557)"} true;
+    assert {:msg "assert_failed(2,487,557): post-condition does not hold"}
+      $IsEqual'u8'($ResourceValue($123_counter_Counter_$memory, $t0)->$value, ($ResourceValue($123_counter_Counter_$memory#0, $t0)->$value + 1));
+
+    // return () at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/counter.move:17:9+70
     return;
 
-    // label L4 at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:17:5+1
-    assume {:print "$at(2,436,437)"} true;
-L4:
+    // label L3 at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/counter.move:11:5+1
+    assume {:print "$at(2,266,267)"} true;
+L3:
 
-    // abort($t5) at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:17:5+1
-    assume {:print "$at(2,436,437)"} true;
-    $abort_code := $t5;
+    // assert Or(Not(exists[@0]<0x123::counter::Counter>($t0)), Le(select counter::Counter.value<0x123::counter::Counter>(global[@0]<0x123::counter::Counter>($t0)), 255)) at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/counter.move:12:5+291
+    assume {:print "$at(2,272,563)"} true;
+    assert {:msg "assert_failed(2,272,563): abort not covered by any of the `aborts_if` clauses"}
+      (!$ResourceExists($123_counter_Counter_$memory#0, $t0) || ($ResourceValue($123_counter_Counter_$memory#0, $t0)->$value <= 255));
+
+    // abort($t3) at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/counter.move:12:5+291
+    $abort_code := $t3;
     $abort_flag := true;
     return;
 
 }
 
-// fun math::average [verification] at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:22:5+157
+// fun math::aborts_if_zero [verification] at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/math.move:24:5+72
+procedure {:timeLimit 40} $123_math_aborts_if_zero$verify(_$t0: int) returns ()
+{
+    // declare local variables
+    var $t1: int;
+    var $t2: bool;
+    var $t3: int;
+    var $t0: int;
+    var $temp_0'u64': int;
+    $t0 := _$t0;
+
+    // verification entrypoint assumptions
+    call $InitVerification();
+
+    // bytecode translation starts here
+    // assume WellFormed($t0) at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/math.move:24:5+1
+    assume {:print "$at(3,604,605)"} true;
+    assume $IsValid'u64'($t0);
+
+    // trace_local[x]($t0) at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/math.move:24:5+1
+    assume {:print "$track_local(3,0,0):", $t0} $t0 == $t0;
+
+    // $t1 := 0 at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/math.move:25:18+1
+    assume {:print "$at(3,657,658)"} true;
+    $t1 := 0;
+    assume $IsValid'u64'($t1);
+
+    // $t2 := ==($t0, $t1) at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/math.move:25:13+6
+    $t2 := $IsEqual'u64'($t0, $t1);
+
+    // if ($t2) goto L1 else goto L0 at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/math.move:25:9+21
+    if ($t2) { goto L1; } else { goto L0; }
+
+    // label L1 at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/math.move:25:27+3
+L1:
+
+    // $t3 := 1 at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/math.move:25:27+3
+    assume {:print "$at(3,666,669)"} true;
+    $t3 := 1;
+    assume $IsValid'u64'($t3);
+
+    // trace_abort($t3) at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/math.move:25:21+9
+    assume {:print "$at(3,660,669)"} true;
+    assume {:print "$track_abort(3,0):", $t3} $t3 == $t3;
+
+    // goto L3 at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/math.move:25:21+9
+    goto L3;
+
+    // label L0 at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/math.move:24:39+38
+    assume {:print "$at(3,638,676)"} true;
+L0:
+
+    // label L2 at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/math.move:26:5+1
+    assume {:print "$at(3,675,676)"} true;
+L2:
+
+    // assert Not(Eq<u64>($t0, 0)) at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/math.move:28:9+17
+    assume {:print "$at(3,719,736)"} true;
+    assert {:msg "assert_failed(3,719,736): function does not abort under this condition"}
+      !$IsEqual'u64'($t0, 0);
+
+    // return () at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/math.move:28:9+17
+    return;
+
+    // label L3 at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/math.move:26:5+1
+    assume {:print "$at(3,675,676)"} true;
+L3:
+
+    // assert Eq<u64>($t0, 0) at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/math.move:27:5+61
+    assume {:print "$at(3,681,742)"} true;
+    assert {:msg "assert_failed(3,681,742): abort not covered by any of the `aborts_if` clauses"}
+      $IsEqual'u64'($t0, 0);
+
+    // abort($t3) at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/math.move:27:5+61
+    $abort_code := $t3;
+    $abort_flag := true;
+    return;
+
+}
+
+// fun math::average [verification] at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/math.move:11:5+151
 procedure {:timeLimit 40} $123_math_average$verify(_$t0: int, _$t1: int) returns ($ret0: int)
 {
     // declare local variables
@@ -4014,216 +4055,160 @@ procedure {:timeLimit 40} $123_math_average$verify(_$t0: int, _$t1: int) returns
     call $InitVerification();
 
     // bytecode translation starts here
-    // assume WellFormed($t0) at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:22:5+1
-    assume {:print "$at(2,511,512)"} true;
+    // assume WellFormed($t0) at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/math.move:11:5+1
+    assume {:print "$at(3,267,268)"} true;
     assume $IsValid'u64'($t0);
 
-    // assume WellFormed($t1) at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:22:5+1
+    // assume WellFormed($t1) at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/math.move:11:5+1
     assume $IsValid'u64'($t1);
 
-    // trace_local[a]($t0) at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:22:5+1
+    // trace_local[a]($t0) at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/math.move:11:5+1
     assume {:print "$track_local(3,1,0):", $t0} $t0 == $t0;
 
-    // trace_local[b]($t1) at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:22:5+1
+    // trace_local[b]($t1) at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/math.move:11:5+1
     assume {:print "$track_local(3,1,1):", $t1} $t1 == $t1;
 
-    // $t3 := <($t0, $t1) at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:23:13+5
-    assume {:print "$at(2,566,571)"} true;
+    // $t3 := <($t0, $t1) at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/math.move:12:13+5
+    assume {:print "$at(3,321,326)"} true;
     call $t3 := $Lt($t0, $t1);
 
-    // if ($t3) goto L1 else goto L0 at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:23:9+99
+    // if ($t3) goto L1 else goto L0 at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/math.move:12:9+95
     if ($t3) { goto L1; } else { goto L0; }
 
-    // label L1 at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:24:13+1
-    assume {:print "$at(2,588,589)"} true;
+    // label L1 at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/math.move:13:13+1
+    assume {:print "$at(3,342,343)"} true;
 L1:
 
-    // $t4 := -($t1, $t0) on_abort goto L4 with $t5 at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:24:17+7
-    assume {:print "$at(2,592,599)"} true;
+    // $t4 := -($t1, $t0) on_abort goto L4 with $t5 at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/math.move:13:17+7
+    assume {:print "$at(3,346,353)"} true;
     call $t4 := $Sub($t1, $t0);
     if ($abort_flag) {
-        assume {:print "$at(2,592,599)"} true;
+        assume {:print "$at(3,346,353)"} true;
         $t5 := $abort_code;
         assume {:print "$track_abort(3,1):", $t5} $t5 == $t5;
         goto L4;
     }
 
-    // $t6 := 2 at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:24:27+1
+    // $t6 := 2 at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/math.move:13:27+1
     $t6 := 2;
     assume $IsValid'u64'($t6);
 
-    // $t7 := /($t4, $t6) on_abort goto L4 with $t5 at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:24:17+11
+    // $t7 := /($t4, $t6) on_abort goto L4 with $t5 at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/math.move:13:17+11
     call $t7 := $Div($t4, $t6);
     if ($abort_flag) {
-        assume {:print "$at(2,592,603)"} true;
+        assume {:print "$at(3,346,357)"} true;
         $t5 := $abort_code;
         assume {:print "$track_abort(3,1):", $t5} $t5 == $t5;
         goto L4;
     }
 
-    // $t8 := +($t0, $t7) on_abort goto L4 with $t5 at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:24:13+15
+    // $t8 := +($t0, $t7) on_abort goto L4 with $t5 at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/math.move:13:13+15
     call $t8 := $AddU64($t0, $t7);
     if ($abort_flag) {
-        assume {:print "$at(2,588,603)"} true;
+        assume {:print "$at(3,342,357)"} true;
         $t5 := $abort_code;
         assume {:print "$track_abort(3,1):", $t5} $t5 == $t5;
         goto L4;
     }
 
-    // $t2 := $t8 at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:24:13+15
+    // $t2 := $t8 at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/math.move:13:13+15
     $t2 := $t8;
 
-    // trace_local[$t4]($t8) at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:24:13+15
+    // trace_local[$t4]($t8) at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/math.move:13:13+15
     assume {:print "$track_local(3,1,2):", $t8} $t8 == $t8;
 
-    // label L2 at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:23:9+99
-    assume {:print "$at(2,562,661)"} true;
+    // label L2 at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/math.move:12:9+95
+    assume {:print "$at(3,317,412)"} true;
 L2:
 
-    // trace_return[0]($t2) at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:23:9+99
-    assume {:print "$at(2,562,661)"} true;
+    // trace_return[0]($t2) at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/math.move:12:9+95
+    assume {:print "$at(3,317,412)"} true;
     assume {:print "$track_return(3,1,0):", $t2} $t2 == $t2;
 
-    // goto L3 at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:23:9+99
+    // goto L3 at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/math.move:12:9+95
     goto L3;
 
-    // label L0 at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:26:13+1
-    assume {:print "$at(2,635,636)"} true;
+    // label L0 at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/math.move:15:13+1
+    assume {:print "$at(3,387,388)"} true;
 L0:
 
-    // $t9 := -($t0, $t1) on_abort goto L4 with $t5 at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:26:17+7
-    assume {:print "$at(2,639,646)"} true;
+    // $t9 := -($t0, $t1) on_abort goto L4 with $t5 at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/math.move:15:17+7
+    assume {:print "$at(3,391,398)"} true;
     call $t9 := $Sub($t0, $t1);
     if ($abort_flag) {
-        assume {:print "$at(2,639,646)"} true;
+        assume {:print "$at(3,391,398)"} true;
         $t5 := $abort_code;
         assume {:print "$track_abort(3,1):", $t5} $t5 == $t5;
         goto L4;
     }
 
-    // $t10 := 2 at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:26:27+1
+    // $t10 := 2 at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/math.move:15:27+1
     $t10 := 2;
     assume $IsValid'u64'($t10);
 
-    // $t11 := /($t9, $t10) on_abort goto L4 with $t5 at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:26:17+11
+    // $t11 := /($t9, $t10) on_abort goto L4 with $t5 at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/math.move:15:17+11
     call $t11 := $Div($t9, $t10);
     if ($abort_flag) {
-        assume {:print "$at(2,639,650)"} true;
+        assume {:print "$at(3,391,402)"} true;
         $t5 := $abort_code;
         assume {:print "$track_abort(3,1):", $t5} $t5 == $t5;
         goto L4;
     }
 
-    // $t12 := +($t1, $t11) on_abort goto L4 with $t5 at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:26:13+15
+    // $t12 := +($t1, $t11) on_abort goto L4 with $t5 at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/math.move:15:13+15
     call $t12 := $AddU64($t1, $t11);
     if ($abort_flag) {
-        assume {:print "$at(2,635,650)"} true;
+        assume {:print "$at(3,387,402)"} true;
         $t5 := $abort_code;
         assume {:print "$track_abort(3,1):", $t5} $t5 == $t5;
         goto L4;
     }
 
-    // $t2 := $t12 at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:26:13+15
+    // $t2 := $t12 at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/math.move:15:13+15
     $t2 := $t12;
 
-    // trace_local[$t4]($t12) at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:26:13+15
+    // trace_local[$t4]($t12) at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/math.move:15:13+15
     assume {:print "$track_local(3,1,2):", $t12} $t12 == $t12;
 
-    // goto L2 at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:26:13+15
+    // goto L2 at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/math.move:15:13+15
     goto L2;
 
-    // label L3 at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:28:5+1
-    assume {:print "$at(2,667,668)"} true;
+    // label L3 at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/math.move:17:5+1
+    assume {:print "$at(3,417,418)"} true;
 L3:
 
-    // return $t2 at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:28:5+1
-    assume {:print "$at(2,667,668)"} true;
+    // assert Implies(Gt($t0, $t1), And(Lt($t2, $t0), Ge($t2, $t1))) at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/math.move:19:9+44
+    assume {:print "$at(3,464,508)"} true;
+    assert {:msg "assert_failed(3,464,508): post-condition does not hold"}
+      (($t0 > $t1) ==> (($t2 < $t0) && ($t2 >= $t1)));
+
+    // assert Implies(Gt($t1, $t0), And(Lt($t2, $t1), Ge($t2, $t0))) at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/math.move:20:3+44
+    assume {:print "$at(3,511,555)"} true;
+    assert {:msg "assert_failed(3,511,555): post-condition does not hold"}
+      (($t1 > $t0) ==> (($t2 < $t1) && ($t2 >= $t0)));
+
+    // assert Implies(Eq<u64>($t0, $t1), Eq<u64>($t2, $t0)) at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/math.move:21:9+31
+    assume {:print "$at(3,564,595)"} true;
+    assert {:msg "assert_failed(3,564,595): post-condition does not hold"}
+      ($IsEqual'u64'($t0, $t1) ==> $IsEqual'u64'($t2, $t0));
+
+    // return $t2 at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/math.move:21:9+31
     $ret0 := $t2;
     return;
 
-    // label L4 at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:28:5+1
+    // label L4 at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/math.move:17:5+1
+    assume {:print "$at(3,417,418)"} true;
 L4:
 
-    // abort($t5) at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:28:5+1
-    assume {:print "$at(2,667,668)"} true;
+    // abort($t5) at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/math.move:17:5+1
+    assume {:print "$at(3,417,418)"} true;
     $abort_code := $t5;
     $abort_flag := true;
     return;
 
 }
 
-// fun math::max [baseline] at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:4:5+74
-procedure {:inline 1} $123_math_max(_$t0: int, _$t1: int) returns ($ret0: int)
-{
-    // declare local variables
-    var $t2: int;
-    var $t3: bool;
-    var $t0: int;
-    var $t1: int;
-    var $temp_0'u64': int;
-    $t0 := _$t0;
-    $t1 := _$t1;
-
-    // bytecode translation starts here
-    // trace_local[a]($t0) at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:4:5+1
-    assume {:print "$at(2,88,89)"} true;
-    assume {:print "$track_local(3,2,0):", $t0} $t0 == $t0;
-
-    // trace_local[b]($t1) at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:4:5+1
-    assume {:print "$track_local(3,2,1):", $t1} $t1 == $t1;
-
-    // $t3 := >=($t0, $t1) at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:5:13+6
-    assume {:print "$at(2,139,145)"} true;
-    call $t3 := $Ge($t0, $t1);
-
-    // if ($t3) goto L1 else goto L0 at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:5:9+20
-    if ($t3) { goto L1; } else { goto L0; }
-
-    // label L1 at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:5:21+1
-L1:
-
-    // $t2 := $t0 at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:5:21+1
-    assume {:print "$at(2,147,148)"} true;
-    $t2 := $t0;
-
-    // trace_local[$t4]($t0) at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:5:21+1
-    assume {:print "$track_local(3,2,2):", $t0} $t0 == $t0;
-
-    // label L2 at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:5:9+20
-L2:
-
-    // trace_return[0]($t2) at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:5:9+20
-    assume {:print "$at(2,135,155)"} true;
-    assume {:print "$track_return(3,2,0):", $t2} $t2 == $t2;
-
-    // goto L3 at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:5:9+20
-    goto L3;
-
-    // label L0 at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:5:28+1
-L0:
-
-    // $t2 := $t1 at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:5:28+1
-    assume {:print "$at(2,154,155)"} true;
-    $t2 := $t1;
-
-    // trace_local[$t4]($t1) at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:5:28+1
-    assume {:print "$track_local(3,2,2):", $t1} $t1 == $t1;
-
-    // goto L2 at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:5:28+1
-    goto L2;
-
-    // label L3 at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:6:5+1
-    assume {:print "$at(2,161,162)"} true;
-L3:
-
-    // return $t2 at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:6:5+1
-    assume {:print "$at(2,161,162)"} true;
-    $ret0 := $t2;
-    return;
-
-}
-
-// fun math::max [verification] at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:4:5+74
+// fun math::max [verification] at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/math.move:4:5+72
 procedure {:timeLimit 40} $123_math_max$verify(_$t0: int, _$t1: int) returns ($ret0: int)
 {
     // declare local variables
@@ -4239,145 +4224,69 @@ procedure {:timeLimit 40} $123_math_max$verify(_$t0: int, _$t1: int) returns ($r
     call $InitVerification();
 
     // bytecode translation starts here
-    // assume WellFormed($t0) at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:4:5+1
-    assume {:print "$at(2,88,89)"} true;
+    // assume WellFormed($t0) at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/math.move:4:5+1
+    assume {:print "$at(3,85,86)"} true;
     assume $IsValid'u64'($t0);
 
-    // assume WellFormed($t1) at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:4:5+1
+    // assume WellFormed($t1) at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/math.move:4:5+1
     assume $IsValid'u64'($t1);
 
-    // trace_local[a]($t0) at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:4:5+1
+    // trace_local[a]($t0) at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/math.move:4:5+1
     assume {:print "$track_local(3,2,0):", $t0} $t0 == $t0;
 
-    // trace_local[b]($t1) at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:4:5+1
+    // trace_local[b]($t1) at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/math.move:4:5+1
     assume {:print "$track_local(3,2,1):", $t1} $t1 == $t1;
 
-    // $t3 := >=($t0, $t1) at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:5:13+6
-    assume {:print "$at(2,139,145)"} true;
+    // $t3 := >=($t0, $t1) at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/math.move:5:13+6
+    assume {:print "$at(3,135,141)"} true;
     call $t3 := $Ge($t0, $t1);
 
-    // if ($t3) goto L1 else goto L0 at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:5:9+20
+    // if ($t3) goto L1 else goto L0 at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/math.move:5:9+20
     if ($t3) { goto L1; } else { goto L0; }
 
-    // label L1 at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:5:21+1
+    // label L1 at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/math.move:5:21+1
 L1:
 
-    // $t2 := $t0 at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:5:21+1
-    assume {:print "$at(2,147,148)"} true;
+    // $t2 := $t0 at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/math.move:5:21+1
+    assume {:print "$at(3,143,144)"} true;
     $t2 := $t0;
 
-    // trace_local[$t4]($t0) at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:5:21+1
+    // trace_local[$t4]($t0) at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/math.move:5:21+1
     assume {:print "$track_local(3,2,2):", $t0} $t0 == $t0;
 
-    // label L2 at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:5:9+20
+    // label L2 at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/math.move:5:9+20
 L2:
 
-    // trace_return[0]($t2) at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:5:9+20
-    assume {:print "$at(2,135,155)"} true;
+    // trace_return[0]($t2) at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/math.move:5:9+20
+    assume {:print "$at(3,131,151)"} true;
     assume {:print "$track_return(3,2,0):", $t2} $t2 == $t2;
 
-    // goto L3 at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:5:9+20
+    // goto L3 at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/math.move:5:9+20
     goto L3;
 
-    // label L0 at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:5:28+1
+    // label L0 at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/math.move:5:28+1
 L0:
 
-    // $t2 := $t1 at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:5:28+1
-    assume {:print "$at(2,154,155)"} true;
+    // $t2 := $t1 at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/math.move:5:28+1
+    assume {:print "$at(3,150,151)"} true;
     $t2 := $t1;
 
-    // trace_local[$t4]($t1) at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:5:28+1
+    // trace_local[$t4]($t1) at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/math.move:5:28+1
     assume {:print "$track_local(3,2,2):", $t1} $t1 == $t1;
 
-    // goto L2 at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:5:28+1
+    // goto L2 at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/math.move:5:28+1
     goto L2;
 
-    // label L3 at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:6:5+1
-    assume {:print "$at(2,161,162)"} true;
+    // label L3 at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/math.move:6:5+1
+    assume {:print "$at(3,156,157)"} true;
 L3:
 
-    // return $t2 at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:6:5+1
-    assume {:print "$at(2,161,162)"} true;
-    $ret0 := $t2;
-    return;
+    // assert Implies(Implies(Ge($t0, $t1), And(Eq<u64>($t2, $t0), Lt($t0, $t1))), Eq<u64>($t2, $t1)) at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/math.move:8:9+56
+    assume {:print "$at(3,199,255)"} true;
+    assert {:msg "assert_failed(3,199,255): post-condition does not hold"}
+      ((($t0 >= $t1) ==> ($IsEqual'u64'($t2, $t0) && ($t0 < $t1))) ==> $IsEqual'u64'($t2, $t1));
 
-}
-
-// fun math::min [verification] at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:11:5+73
-procedure {:timeLimit 40} $123_math_min$verify(_$t0: int, _$t1: int) returns ($ret0: int)
-{
-    // declare local variables
-    var $t2: int;
-    var $t3: bool;
-    var $t0: int;
-    var $t1: int;
-    var $temp_0'u64': int;
-    $t0 := _$t0;
-    $t1 := _$t1;
-
-    // verification entrypoint assumptions
-    call $InitVerification();
-
-    // bytecode translation starts here
-    // assume WellFormed($t0) at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:11:5+1
-    assume {:print "$at(2,286,287)"} true;
-    assume $IsValid'u64'($t0);
-
-    // assume WellFormed($t1) at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:11:5+1
-    assume $IsValid'u64'($t1);
-
-    // trace_local[a]($t0) at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:11:5+1
-    assume {:print "$track_local(3,3,0):", $t0} $t0 == $t0;
-
-    // trace_local[b]($t1) at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:11:5+1
-    assume {:print "$track_local(3,3,1):", $t1} $t1 == $t1;
-
-    // $t3 := <($t0, $t1) at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:12:13+5
-    assume {:print "$at(2,337,342)"} true;
-    call $t3 := $Lt($t0, $t1);
-
-    // if ($t3) goto L1 else goto L0 at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:12:9+19
-    if ($t3) { goto L1; } else { goto L0; }
-
-    // label L1 at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:12:20+1
-L1:
-
-    // $t2 := $t0 at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:12:20+1
-    assume {:print "$at(2,344,345)"} true;
-    $t2 := $t0;
-
-    // trace_local[$t4]($t0) at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:12:20+1
-    assume {:print "$track_local(3,3,2):", $t0} $t0 == $t0;
-
-    // label L2 at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:12:9+19
-L2:
-
-    // trace_return[0]($t2) at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:12:9+19
-    assume {:print "$at(2,333,352)"} true;
-    assume {:print "$track_return(3,3,0):", $t2} $t2 == $t2;
-
-    // goto L3 at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:12:9+19
-    goto L3;
-
-    // label L0 at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:12:27+1
-L0:
-
-    // $t2 := $t1 at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:12:27+1
-    assume {:print "$at(2,351,352)"} true;
-    $t2 := $t1;
-
-    // trace_local[$t4]($t1) at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:12:27+1
-    assume {:print "$track_local(3,3,2):", $t1} $t1 == $t1;
-
-    // goto L2 at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:12:27+1
-    goto L2;
-
-    // label L3 at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:13:5+1
-    assume {:print "$at(2,358,359)"} true;
-L3:
-
-    // return $t2 at /mnt/c/Users/shc-pc/Documents/GitHub/AlgoMove/experiments/aptos/prover/sources/math.move:13:5+1
-    assume {:print "$at(2,358,359)"} true;
+    // return $t2 at /Users/lollobene/Dev/AlgoMove/experiments/aptos/prover/sources/math.move:8:9+56
     $ret0 := $t2;
     return;
 

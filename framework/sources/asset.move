@@ -20,8 +20,10 @@ module algomove::asset {
 	}
 
 	public fun deposit<AssetType>(receiver: address, assets: Asset<AssetType>) {
-		let Asset { id, amount, owner:_ } = assets;
-		txn::asset_transfer(op::txn_Sender(), id, amount, receiver)
+		let Asset { id, amount, owner } = assets;
+		let sender = op::txn_Sender();
+		assert!(owner == sender, 1);
+		txn::asset_transfer(sender, id, amount, receiver)
 	}
 
 	public fun withdraw<AssetType>(acc: &signer, amount: u64): Asset<AssetType> {
